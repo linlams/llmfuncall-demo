@@ -1,12 +1,19 @@
+
+## 介绍
+AWS [开源知识库](https://github.com/aws-samples/private-llm-qa-bot) Function Call Demo
+
 ## 部署方式
 
-## 部署Lambda
+## 注意
+需要整理你的知识数据放入data.csv, 请联系SA。例子使用了一个航司的数据，由于数据安全，这里没有给出
+
+### 部署Lambda
 - 在cdk部署所在的Ec2中，执行如下命令部署
 ```bash
 sh deploy.sh {region} {agent_tool_name} #for example agent_tool_name = 'airline'
 ```
 
-## 数据摄入脚本
+### 数据摄入脚本
 
 - 连接QAChatDeployStack/Ec2Stack/ProxyInstance, 执行如下脚本进行进行数据摄入。
   + 连接mysql，连接参数请从上一步部署的Lambda的环境变量中进行获取
@@ -23,7 +30,7 @@ bash ingest_data.sh ${region} "truncate"
 
 
 
-## 测试lambda. 进入lambda控制台，使用如下参数，进行测试
+### 测试lambda. 进入lambda控制台，使用如下参数，进行测试
 ```bash
 #case 1
 {"param" : { "flightno" : "3U" }, "query" : "3U 的称谓规则是什么"}
@@ -32,5 +39,8 @@ bash ingest_data.sh ${region} "truncate"
 {"param" : { "flightno" : "BK" }, "query" : "保盛是否可以预定航司BK的机票"}
 ```
 
-## 添加fewshot
+### 添加fewshot
 使用airline.example作为fel shot ,在知识库web界面添加fewshot
+
+## 效果
+![alt text](image.png)
