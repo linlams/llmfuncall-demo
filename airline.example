@@ -1,0 +1,47 @@
+{
+  "api_schema": {
+    "name": "airline",
+    "description": "查询航司相关信息，例如称谓规则，国际国内预定规则等",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "flightno": {
+          "type": "string",
+          "description": "航司code"
+        },
+        "required": [
+          "flightno"
+        ]
+      }
+    }
+  },
+  "examples": [
+    {
+      "query": "航司AI的称谓规则是",
+      "detection": {
+        "func": "airline",
+        "param": {
+          "flightno": "AI"
+        }
+      }
+    },
+    {
+      "query": "保盛能否预定航司GA",
+      "detection": {
+        "func": "airline",
+        "param": {
+          "flightno": "GA"
+        }
+      }
+    },
+    {
+      "query": "国际可以预定航司EU行程吗",
+      "detection": {
+        "func": "airline",
+        "param": {
+          "flightno": "EU"
+        }
+      }
+    }
+  ]
+}
