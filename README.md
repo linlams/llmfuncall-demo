@@ -2,6 +2,28 @@
 ## 介绍
 AWS [开源知识库](https://github.com/aws-samples/private-llm-qa-bot) Function Call Demo
 
+## 前提
+请提前想好你function call 的业务名称，后续称其为agent_name。本例子中，agent_name 为 airline
+
+## 代码修改
+### 修改lambda_function.py, 重点修改如下：
+1. 数据模型
+![alt text](image-1.png)
+上述代码应该按照您的要处理的数据的结构进行映射
+
+2. format_results 函数，请根据您的数据结构，将其按照提示词工程的最佳实践格式化成大语言模型容易理解的内容，请参考例子
+
+3. 代码95-110行
+
+### 修改ingest_data.py
+1. 修改数据模型，保持和lambda_function一致
+![alt text](image-2.png)
+
+2. 代码71-76行，根据业务需要进行映射
+
+
+### 修改ingest_data.sh
+1. 部署成功后的lambda的名称格式为 agent_tool_{agent_name}, 本例子为：agent_tool_airline。 所以你需要修改ingest_data.sh中的 12-32行
 ## 部署方式
 
 ## 注意
@@ -9,9 +31,13 @@ AWS [开源知识库](https://github.com/aws-samples/private-llm-qa-bot) Functio
 
 ### 部署Lambda
 - 在cdk部署所在的Ec2中，执行如下命令部署
+1. 如果没有安装git, 请先安装git, 然后使用git 下载你修改后的代码
+2. 执行下属命令安装lambda
 ```bash
+pip3 install boto3
 sh deploy.sh {region} {agent_tool_name} #for example agent_tool_name = 'airline'
 ```
+注意 agent_tool_name 将作为你的lambda函数名
 
 ### 数据摄入脚本
 
@@ -36,7 +62,7 @@ bash ingest_data.sh ${region} "truncate"
 {"param" : { "flightno" : "3U" }, "query" : "3U 的称谓规则是什么"}
 
 #case 2
-{"param" : { "flightno" : "BK" }, "query" : "保盛是否可以预定航司BK的机票"}
+{"param" : { "flightno" : "BK" }, "query" : "国际是否可以预定航司BK的机票"}
 ```
 
 ### 添加fewshot
