@@ -24,6 +24,10 @@ AWS [开源知识库](https://github.com/aws-samples/private-llm-qa-bot) Functio
 
 ### 修改ingest_data.sh
 1. 部署成功后的lambda的名称格式为 agent_tool_{agent_name}, 本例子为：agent_tool_airline。 所以你需要修改ingest_data.sh中的 12-32行
+
+### 修改few shot
+新建一个类似{agent_name}.example的文本文件，例如airline.example的文件，参考例子，更新few shot, 并且修改里面的func名称
+
 ## 部署方式
 
 ## 注意
