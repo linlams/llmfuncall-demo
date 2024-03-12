@@ -55,7 +55,7 @@ bash ingest_data.sh ${region} "truncate"
 ```
 
 
-
+## 验证
 ### 测试lambda. 进入lambda控制台，使用如下参数，进行测试
 ```bash
 #case 1
@@ -64,6 +64,9 @@ bash ingest_data.sh ${region} "truncate"
 #case 2
 {"param" : { "flightno" : "BK" }, "query" : "国际是否可以预定航司BK的机票"}
 ```
+
+### 验证名为Chat_Agent的lambda 函数的环境变量
+检查是否有名字为agent_tools，值为	agent_tool_airline的环境变量
 
 ### 添加fewshot
 使用airline.example作为fel shot ,在知识库web界面添加fewshot
