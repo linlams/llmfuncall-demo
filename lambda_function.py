@@ -59,7 +59,7 @@ def lambda_handler(event, context):
             'message': e.json()
         }
 
-    airline_sql = Visa_SQLAlchemy(**airline_obj.dict())
+    visa_sql = Visa_SQLAlchemy(**airline_obj.dict())
 
     def format_results(results):
         converted_items = []
@@ -86,17 +86,17 @@ def lambda_handler(event, context):
 
     suggested_question = ""
     code = 200
-    if airline_sql.flightno is not None:
+    if visa_sql.flightno is not None:
         print("query by employee name")
         results = session.query(Visa_SQLAlchemy).filter(
-            Visa_SQLAlchemy.flightno.ilike(f'%{airline_sql.flightno}%')).all()
+            Visa_SQLAlchemy.flightno.ilike(f'%{visa_sql.flightno}%')).all()
         if len(results) == 0:
-            message = f"无法找到航司- {airline_sql.flightno}."
+            message = f"无法找到航司- {visa_sql.flightno}."
             all_possible_flights = session.query(Visa_SQLAlchemy.flightno).all()
-            top_similar_objs = possible_candidates_by_diff(all_possible_flights, airline_sql.flightno)
+            top_similar_objs = possible_candidates_by_diff(all_possible_flights, visa_sql.flightno)
             if len(top_similar_objs) > 1 and query:
                 code = 404
-                suggested_question = query.replace(airline_sql.flightno, top_similar_objs[0])
+                suggested_question = query.replace(visa_sql.flightno, top_similar_objs[0])
         else:
             message = format_results(results)
 
