@@ -65,7 +65,7 @@ def lambda_handler(event, context):
         converted_items = []
 
         for idx, item in enumerate(results):
-            e_visa_in_set = '支持电子签' if item.international_can_set == '支持电子签' else '不支持电子签'
+            e_visa_in_set = '支持电子签' if item.e_visa == '支持电子签' else '不支持电子签'
             converted_items.append(
                 f"[{idx + 1}] {item.country} 签证签证类型为：{item.visa_requirement} , {e_visa_in_set} ,相关政策：{item.policy},政策URL：{item.policy_url}, 其他规定：{item.regulation}")
 
