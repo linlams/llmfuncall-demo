@@ -8,7 +8,7 @@ fi
 
 # 这里根据需要修改
 db_name="simple_info_db"
-db_table_name='airline'
+db_table_name='visa'
 ###########################
 
 region=$1
