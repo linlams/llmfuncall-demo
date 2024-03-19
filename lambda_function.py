@@ -67,7 +67,7 @@ def lambda_handler(event, context):
         for idx, item in enumerate(results):
             e_visa_in_set = '支持电子签' if item.e_visa == '支持电子签' else '不支持电子签'
             converted_items.append(
-                f"[{idx + 1}] {item.country} 签证签证类型为：{item.visa_requirement} , {e_visa_in_set} ,相关政策：{item.policy},政策URL：{item.policy_url}, 其他规定：{item.regulation}")
+                f"[{idx + 1}] {item.country}签证类型为：{item.visa_requirement} , {e_visa_in_set} ,相关政策：{item.policy},政策URL：{item.policy_url}, 其他规定：{item.regulation}")
 
 
         return converted_items
@@ -91,7 +91,7 @@ def lambda_handler(event, context):
         results = session.query(Visa_SQLAlchemy).filter(
             Visa_SQLAlchemy.country.ilike(f'%{visa_sql.country}%')).all()
         if len(results) == 0:
-            message = f"无法找到签证信息- {visa_sql.country}."
+            message = f"无法找到{visa_sql.country}签证信息."
             all_possible_visas = session.query(Visa_SQLAlchemy.country).all()
             top_similar_objs = possible_candidates_by_diff(all_possible_visas, visa_sql.country)
             if len(top_similar_objs) > 1 and query:
