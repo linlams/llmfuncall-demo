@@ -50,16 +50,16 @@ def lambda_handler(event, context):
     param = event.get('param')
     query = event.get('query', None)
 
-    airline_obj = None
+    visa_obj = None
     try:
-        airline_obj = Visa_Pydantic(**param)
+        visa_obj = Visa_Pydantic(**param)
     except ValidationError as e:
         return {
             'statusCode': 500,
             'message': e.json()
         }
 
-    visa_sql = Visa_SQLAlchemy(**airline_obj.dict())
+    visa_sql = Visa_SQLAlchemy(**visa_obj.dict())
 
     def format_results(results):
         converted_items = []
@@ -86,12 +86,12 @@ def lambda_handler(event, context):
 
     suggested_question = ""
     code = 200
-    if visa_sql.flightno is not None:
+    if visa_sql.country is not None:
         print("query by employee name")
         results = session.query(Visa_SQLAlchemy).filter(
             Visa_SQLAlchemy.flightno.ilike(f'%{visa_sql.flightno}%')).all()
         if len(results) == 0:
-            message = f"无法找到航司- {visa_sql.flightno}."
+            message = f"无法找到签证信息- {visa_sql.country}."
             all_possible_flights = session.query(Visa_SQLAlchemy.flightno).all()
             top_similar_objs = possible_candidates_by_diff(all_possible_flights, visa_sql.flightno)
             if len(top_similar_objs) > 1 and query:
