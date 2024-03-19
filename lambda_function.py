@@ -89,14 +89,14 @@ def lambda_handler(event, context):
     if visa_sql.country is not None:
         print("query by employee name")
         results = session.query(Visa_SQLAlchemy).filter(
-            Visa_SQLAlchemy.flightno.ilike(f'%{visa_sql.flightno}%')).all()
+            Visa_SQLAlchemy.country.ilike(f'%{visa_sql.country}%')).all()
         if len(results) == 0:
             message = f"无法找到签证信息- {visa_sql.country}."
-            all_possible_flights = session.query(Visa_SQLAlchemy.flightno).all()
-            top_similar_objs = possible_candidates_by_diff(all_possible_flights, visa_sql.flightno)
+            all_possible_visas = session.query(Visa_SQLAlchemy.country).all()
+            top_similar_objs = possible_candidates_by_diff(all_possible_visas, visa_sql.country)
             if len(top_similar_objs) > 1 and query:
                 code = 404
-                suggested_question = query.replace(visa_sql.flightno, top_similar_objs[0])
+                suggested_question = query.replace(visa_sql.country, top_similar_objs[0])
         else:
             message = format_results(results)
 
