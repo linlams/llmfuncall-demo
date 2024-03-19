@@ -23,26 +23,25 @@ session = Session(bind=new_db_engine)
 
 
 # 定义模型类，需要根据数据修改
-class Airline_SQLAlchemy(Base):
+class Visa_SQLAlchemy(Base):
     __tablename__ = db_table_name
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    flightno = Column(String(32), nullable=True)
-    callname = Column(String(128), nullable=True)
-    domestic_setting = Column(String(128), nullable=True)
-    international_can_set = Column(String(32), nullable=True)
-    international_online_set = Column(String(32), nullable=True)
-    baoshen_can_set = Column(String(32), nullable=True)
-    domestic_license = Column(String(128), nullable=True)
+    country = Column(String(50), primary_key=True)
+    continent = Column(String(50), nullable=True)
+    visa_requirement = Column(String(100), nullable=True)
+    e_visa = Column(String(50), nullable=True)
+    policy = Column(String(255), nullable=True)
+    policy_url = Column(String(255), nullable=True)
+    regulation = Column(String(255), nullable=True)
 
 
-class Airline_Pydantic(BaseModel):
-    flightno: Optional[str] = None
-    callname: Optional[str] = None
-    domestic_setting: Optional[str] = None
-    international_can_set: Optional[str] = None
-    international_online_set: Optional[str] = None
-    baoshen_can_set: Optional[str] = None
-    domestic_license: Optional[str] = None
+class Visa_Pydantic(BaseModel):
+    country: Optional[str] = None
+    continent: Optional[str] = None
+    visa_requirement: Optional[str] = None
+    e_visa: Optional[str] = None
+    policy: Optional[str] = None
+    policy_url: Optional[str] = None
+    regulation: Optional[str] = None
 
 #############################################
 
@@ -53,28 +52,23 @@ def lambda_handler(event, context):
 
     airline_obj = None
     try:
-        airline_obj = Airline_Pydantic(**param)
+        airline_obj = Visa_Pydantic(**param)
     except ValidationError as e:
         return {
             'statusCode': 500,
             'message': e.json()
         }
 
-    airline_sql = Airline_SQLAlchemy(**airline_obj.dict())
+    airline_sql = Visa_SQLAlchemy(**airline_obj.dict())
 
     def format_results(results):
         converted_items = []
 
         for idx, item in enumerate(results):
-            in_set = '可以' if item.international_can_set == '是' else '不可以'
-            online_set = '可以' if item.international_online_set == '是' else '不可以'
-            baoshen_set = '可以' if item.baoshen_can_set == '是' else '不可以'
+            e_visa_in_set = '支持电子签' if item.international_can_set == '支持电子签' else '不支持电子签'
             converted_items.append(
-                f"[{idx + 1}] 航司 {item.flightno} 有这些紧密关联的信息。它称谓规则请从如下json总结：<json>{item.callname}<json>, "
-                f"它的国内预定配置信息请从如下json总结：<json>{item.domestic_setting} <json>，"
-                f"航司 {item.flightno} 在国际{in_set}预定，"
-                f"航司 {item.flightno} 在境外 {online_set} 电子预定，"
-                f"航司 {item.flightno} 通过保盛 {baoshen_set} 预定")
+                f"[{idx + 1}] {item.country} 签证签证类型为：{item.visa_requirement} , {e_visa_in_set} ,相关政策：{item.policy},政策URL：{item.policy_url}, 其他规定：{item.regulation}")
+
 
         return converted_items
 
@@ -94,11 +88,11 @@ def lambda_handler(event, context):
     code = 200
     if airline_sql.flightno is not None:
         print("query by employee name")
-        results = session.query(Airline_SQLAlchemy).filter(
-            Airline_SQLAlchemy.flightno.ilike(f'%{airline_sql.flightno}%')).all()
+        results = session.query(Visa_SQLAlchemy).filter(
+            Visa_SQLAlchemy.flightno.ilike(f'%{airline_sql.flightno}%')).all()
         if len(results) == 0:
             message = f"无法找到航司- {airline_sql.flightno}."
-            all_possible_flights = session.query(Airline_SQLAlchemy.flightno).all()
+            all_possible_flights = session.query(Visa_SQLAlchemy.flightno).all()
             top_similar_objs = possible_candidates_by_diff(all_possible_flights, airline_sql.flightno)
             if len(top_similar_objs) > 1 and query:
                 code = 404
